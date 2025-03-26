@@ -1,0 +1,79 @@
+20161107 和田宝成@CDB形態形成シグナル
+
+Plugin Name
+	SaveMov ver.20151218
+
+FileName
+	SaveMov_.jar
+
+製作者
+	和田　宝成
+
+概要
+	Quickteim形式(.mov)で保存するplugin
+	java1.8使用バージョン
+	Save as Movie(Qingzong TSENG)を参考にmovのみに特化したpluginとした(javacvを使用してエンコードを行う)
+	Save as Movieではjavacv(ffmpeg,OpenCV)で対応しているあらゆる組み合わせのエンコードが可能だが、使用範囲が決まっている場合には選択項目が多すぎて使いにくく感じていた
+	また、java1.6でのみ動作という制限がある
+	Save as MovieではffmegおよびOpenCV由来の機能を回避する必要性があるためplugin側でそれを行うようにしている
+	具体的には16の倍数の画像サイズではない場合、画像の拡大縮小が自動的に行われるという問題がある
+	われわれの使用においてこれをされると縮尺率が変わってしまうため根幹に関わる問題である
+	これの回避方法として16の倍数になるように余白を自動で追加する仕組みを備えた
+	また、bit rateについても自動計算される値をSave as Movieより大きく設定しており低解像度時に起こるノイズをある程度解消できる
+	
+
+機能説明
+	TextArea : Frame rate(f/s)
+		フレームレートの指定
+		デフォルト値としてImageJで指定している値を使用
+	
+	TextArea : Bit rate(kb/s)
+		ビットレートの指定
+		この値が大きいほど高解像度のムービーが作成される
+		デフォルト値は下記式により算出
+	
+	ComboBox : Cordec
+		H.264
+			H.264でエンコードする
+			*不具合あり(javacvの新バージョンによりでたものか？)
+		
+		MPEG4
+			MPEG4でエンコードする
+
+	CheckBox : Add time stamp
+		checked : time stampを画像に追加する
+	
+	TextArea : Interval(sec)
+		time stampに用いる間隔を指定
+		デフォルト値は画像由来のFrame intervalを使用
+	
+	TextArea : Font size
+		Time stamp に用いる文字のサイズを指定
+	
+	CheckBox : Add scale bar
+		checked : scale barを画像に追加する
+	
+	TextArea : Scale bar(um)
+		scale barの長さを指定
+		デフォルト値は10um
+		*画像に保存されているもしくはImageJ上で指定したpixel/micronを用いて計算する
+
+	CheckBox : Height expansion
+		checked : time stampやscale barを書き入れる余白を追加する
+		unchecked : time stampやscale barは画像上に書き込まれる
+
+	Button : Cancel
+		キャンセルボタン
+		
+	Button : OK
+		上記設定でムービーを作成する
+
+その他の詳細情報
+	
+
+
+注意点
+
+	最近のmovファイルはH.264を推奨している。
+	しかし、H.264での高ビットレートエンコード時に何とも言えない不具合が生じることがある。(おそらくffmepegあたりの不具合)
+	*デフォルトで計算されているビットレートよりも3倍くらいで最大解像度となりそう
